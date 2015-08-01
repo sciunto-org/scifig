@@ -143,7 +143,7 @@ class Task():
         self.png = self.name + '.png'
         # Prepare and run the command
         command = [self.pngmaker, '-sDEVICE=png16m', '-o',
-                   self.png, '-r' + str(spi), self.name + '.pdf']
+                   self.png, '-r' + str(dpi), self.name + '.pdf']
         # in plt, all path are relative, need to move
         logging.debug('chdir: %s' % self.buildpath)
         os.chdir(self.buildpath)
