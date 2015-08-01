@@ -178,6 +178,17 @@ class Task():
         self._pdf_to_png()
         dblib.store_checksum(self.dirname, self.dependencies, self.db)
 
+    def export_tex(self, dst='/tmp'):
+        """
+        Export TEX files.
+
+        :param dst: filepath of the destination directory
+        """
+        dst = os.path.expanduser(dst)
+        tex_src = self.tex
+        logging.debug('Export %s to %s' % (tex_src, dst))
+        shutil.copy(tex_src, dst)
+
     def export_pdf(self, dst='/tmp'):
         """
         Export built PDF files.
@@ -228,6 +239,9 @@ class Task():
 
         :param dst: filepath of the destination directory
         """
+        texdir = os.path.join(dst, 'tex')
+        os.makedirs(texdir, exist_ok=True)
+        self.export_tex(texdir)
         pdfdir = os.path.join(dst, 'pdf')
         os.makedirs(pdfdir, exist_ok=True)
         self.export_pdf(pdfdir)
