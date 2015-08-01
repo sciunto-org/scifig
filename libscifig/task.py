@@ -57,7 +57,7 @@ class Task():
         """
         Return the name of the task.
         """
-        return self.dirname
+        return self.id
 
     def check(self):
         """
