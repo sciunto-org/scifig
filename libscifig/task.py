@@ -405,7 +405,7 @@ class GnuplotTask(Task):
             logging.debug('Read tikzsnippet')
             with open(self.snippetfile, 'r') as fh:
                 snippet = fh.read()
-            snippet = re.sub('\\\\end{tikzpicture}', '', snippet1)
+            snippet = re.sub('\\\\end{tikzpicture}', '', snippet)
             snippet = snippet.split('\\begin{tikzpicture}')
             logging.debug('Inject header tikzsnippet')
             tex_content += snippet[0]
