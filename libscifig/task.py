@@ -42,11 +42,12 @@ class Task():
     def __init__(self, filepath, build='build', db='db.db'):
         self.db = db
         self.cwd = os.getcwd()
+        self.id = filepath
         self.dependencies = []
         self.dependencies.append(filepath)
         self.dirname, filename = os.path.split(filepath)
         self.name = os.path.splitext(filename)[0]
-        self.buildpath = os.path.join(build, self.dirname)
+        self.buildpath = os.path.join(build, os.path.relpath(self.dirname))
         self.pdfmaker = '/usr/bin/pdflatex'
         self.svgmaker = '/usr/bin/pdf2svg'
         self.epsmaker = '/usr/bin/pdftops'
@@ -56,13 +57,13 @@ class Task():
         """
         Return the name of the task.
         """
-        return self.dirname
+        return self.id
 
     def check(self):
         """
         Check if the task needs to be done.
         """
-        return dblib.check_modification(self.dirname, self.dependencies, self.db)
+        return dblib.check_modification(self.id, self.dependencies, self.db)
 
     def _tex_to_pdf(self):
         """
@@ -176,7 +177,7 @@ class Task():
         self._pdf_to_svg()
         self._pdf_to_eps()
         self._pdf_to_png()
-        dblib.store_checksum(self.dirname, self.dependencies, self.db)
+        dblib.store_checksum(self.id, self.dependencies, self.db)
 
     def export_tex(self, dst='/tmp'):
         """
@@ -273,7 +274,12 @@ class TikzTask(Task):
         """
         # Copy data files
         for data in self.data:
-            dest = os.path.join(self.buildpath, os.path.split(data)[1])
+            # Data starts from the root.
+            # We need the relative path from the individual directory (ex: src/figure/)
+            dest = os.path.join(self.buildpath, os.path.relpath(data, start=os.path.split(self.tikz)[0]))
+            # Data may be in subdirectories
+            # We reproduce the tree
+            os.makedirs(os.path.split(dest)[0], exist_ok=True)
             logging.debug('copy %s file to %s' % (data, dest))
             shutil.copy(data, dest)
         logging.info('tikz -> tex')
@@ -320,8 +326,8 @@ class GnuplotTask(Task):
     """
     Gnuplot Task manager.
     """
-    def __init__(self, filepath, datafiles=[], tikzsnippet1=False,
-                 tikzsnippet2=False, build='build', db='db.db'):
+    def __init__(self, filepath, datafiles=[], tikzsnippet=False,
+                 tikzsnippet1=False, tikzsnippet2=False, build='build', db='db.db'):
         Task.__init__(self, filepath, build=build)
         self.plt = filepath
 
@@ -330,8 +336,12 @@ class GnuplotTask(Task):
         self.pltcopy = os.path.join(build, self.dirname, self.name + '.plt')
         self.tex = os.path.join(build, self.dirname, self.name + '.tex')
         self.plttikz = os.path.join(build, self.dirname, self.name + '.plttikz')
+        self.tikzsnippet = tikzsnippet
         self.tikzsnippet1 = tikzsnippet1
         self.tikzsnippet2 = tikzsnippet2
+        if tikzsnippet:
+            self.snippetfile = os.path.join(self.dirname, self.name + '.tikzsnippet')
+            self.dependencies.append(self.snippetfile)
         if tikzsnippet1:
             self.snippet1file = os.path.join(self.dirname, self.name + '.tikzsnippet1')
             self.dependencies.append(self.snippet1file)
@@ -348,10 +358,15 @@ class GnuplotTask(Task):
         logging.info('plt -> plttikz')
         logging.debug('copy plt file to %s' % self.buildpath)
         shutil.copyfile(self.plt, self.pltcopy)
+
         # Copy data files
         for data in self.data:
-            dest = os.path.join(self.buildpath, os.path.split(data)[1])
-            logging.debug('copy %s file to %s' % (data, dest))
+            # Data starts from the root.
+            # We need the relative path from the individual directory (ex: src/figure/)
+            dest = os.path.join(self.buildpath, os.path.relpath(data, start=os.path.split(self.plt)[0]))
+            # Data may be in subdirectories
+            # We reproduce the tree
+            os.makedirs(os.path.split(dest)[0], exist_ok=True)
             shutil.copy(data, dest)
         # Prepare and run the command
         command = [self.gnuplot, self.name + '.plt']
@@ -386,6 +401,14 @@ class GnuplotTask(Task):
 """
 
         # Inject headers
+        if self.tikzsnippet:
+            logging.debug('Read tikzsnippet')
+            with open(self.snippetfile, 'r') as fh:
+                snippet = fh.read()
+            snippet = re.sub('\\\\end{tikzpicture}', '', snippet)
+            snippet = snippet.split('\\begin{tikzpicture}')
+            logging.debug('Inject header tikzsnippet')
+            tex_content += snippet[0]
         if self.tikzsnippet1:
             logging.debug('Read tikzsnippet1')
             with open(self.snippet1file, 'r') as fh:

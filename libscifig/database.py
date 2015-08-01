@@ -42,7 +42,7 @@ def check_modification(name, dependencies, db_path):
         for dep, md5 in cur_signature.items():
             value = db.get(dep)
             if value is None or value != md5:
-                logging.debug('value is None or does not match, modif is True')
+                logging.debug('value of %s is None or does not match, modif is True' % dep)
                 return True
     return False
 

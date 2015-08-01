@@ -3,3 +3,5 @@
 * If files deleted from export, re-export
 * Check if makers in task are on the system
 * Partial builds (make tex, make pdf... and do the minimum to reach this goal)
+
+* python 3.5 use recursive glob in detector
