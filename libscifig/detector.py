@@ -47,7 +47,9 @@ def detect_tikzsnippets(plt):
     :returns: tuple of 2 booleans
     """
     base = os.path.splitext(plt)[0] + '.tikzsnippet'
-    snippets = [os.path.isfile(base + '1'), os.path.isfile(base + '2'),]
+    snippets = [os.path.isfile(base),
+                os.path.isfile(base + '1'),
+                os.path.isfile(base + '2'),]
     logging.debug('In %s' % base)
     logging.debug('Detected tikzsnippets: %s' % snippets)
     return snippets
@@ -66,9 +68,10 @@ def detect_task(directory, root_path):
     tasks = []
     for plt_file in plt_files:
         data = detect_datafile(plt_file, root_path)
-        snippet1, snippet2 = detect_tikzsnippets(plt_file)
+        snippet, snippet1, snippet2 = detect_tikzsnippets(plt_file)
         tasks.append(GnuplotTask(plt_file,
                                  datafiles=data,
+                                 tikzsnippet=snippet,
                                  tikzsnippet1=snippet1,
                                  tikzsnippet2=snippet2,
                                  db=db_path,

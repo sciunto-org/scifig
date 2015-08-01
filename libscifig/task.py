@@ -325,8 +325,8 @@ class GnuplotTask(Task):
     """
     Gnuplot Task manager.
     """
-    def __init__(self, filepath, datafiles=[], tikzsnippet1=False,
-                 tikzsnippet2=False, build='build', db='db.db'):
+    def __init__(self, filepath, datafiles=[], tikzsnippet=False,
+                 tikzsnippet1=False, tikzsnippet2=False, build='build', db='db.db'):
         Task.__init__(self, filepath, build=build)
         self.plt = filepath
 
@@ -335,8 +335,12 @@ class GnuplotTask(Task):
         self.pltcopy = os.path.join(build, self.dirname, self.name + '.plt')
         self.tex = os.path.join(build, self.dirname, self.name + '.tex')
         self.plttikz = os.path.join(build, self.dirname, self.name + '.plttikz')
+        self.tikzsnippet = tikzsnippet
         self.tikzsnippet1 = tikzsnippet1
         self.tikzsnippet2 = tikzsnippet2
+        if tikzsnippet:
+            self.snippetfile = os.path.join(self.dirname, self.name + '.tikzsnippet')
+            self.dependencies.append(self.snippetfile)
         if tikzsnippet1:
             self.snippet1file = os.path.join(self.dirname, self.name + '.tikzsnippet1')
             self.dependencies.append(self.snippet1file)
@@ -396,6 +400,14 @@ class GnuplotTask(Task):
 """
 
         # Inject headers
+        if self.tikzsnippet1:
+            logging.debug('Read tikzsnippet')
+            with open(self.snippetfile, 'r') as fh:
+                snippet = fh.read()
+            snippet = re.sub('\\\\end{tikzpicture}', '', snippet1)
+            snippet = snippet.split('\\begin{tikzpicture}')
+            logging.debug('Inject header tikzsnippet')
+            tex_content += snippet[0]
         if self.tikzsnippet1:
             logging.debug('Read tikzsnippet1')
             with open(self.snippet1file, 'r') as fh:
