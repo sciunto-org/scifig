@@ -16,3 +16,9 @@ It should provide:
 * automatic translations
 
 This code is a rewritten version of a previous code named SciFigWorkflow. This tool was based on waf. The idea was to use a solid codebase, but it was difficult to maintain and to provide new evolutions to the workflow.
+
+
+Documentation
+=============
+
+http://scifig.readthedocs.org
