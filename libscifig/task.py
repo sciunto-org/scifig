@@ -42,6 +42,7 @@ class Task():
     def __init__(self, filepath, build='build', db='db.db'):
         self.db = db
         self.cwd = os.getcwd()
+        self.id = filepath
         self.dependencies = []
         self.dependencies.append(filepath)
         self.dirname, filename = os.path.split(filepath)
@@ -62,7 +63,7 @@ class Task():
         """
         Check if the task needs to be done.
         """
-        return dblib.check_modification(self.dirname, self.dependencies, self.db)
+        return dblib.check_modification(self.id, self.dependencies, self.db)
 
     def _tex_to_pdf(self):
         """
@@ -176,7 +177,7 @@ class Task():
         self._pdf_to_svg()
         self._pdf_to_eps()
         self._pdf_to_png()
-        dblib.store_checksum(self.dirname, self.dependencies, self.db)
+        dblib.store_checksum(self.id, self.dependencies, self.db)
 
     def export_tex(self, dst='/tmp'):
         """
@@ -400,7 +401,7 @@ class GnuplotTask(Task):
 """
 
         # Inject headers
-        if self.tikzsnippet1:
+        if self.tikzsnippet:
             logging.debug('Read tikzsnippet')
             with open(self.snippetfile, 'r') as fh:
                 snippet = fh.read()
