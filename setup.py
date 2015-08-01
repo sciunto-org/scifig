@@ -4,7 +4,7 @@ from distutils.core import setup
 import libscifig
 
 setup(
-    name         = 'bibtexparser',
+    name         = 'scifig',
     version      = libscifig.__version__,
     #url          = info.URL,
     author       = "Francois Boulogne",
