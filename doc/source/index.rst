@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    what.rst
+   install.rst
    api.rst
 
 
