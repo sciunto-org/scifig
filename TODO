@@ -1,0 +1,5 @@
+* implement other devices for png output
+* If build deleted or some figures in it, rebuild figures
+* If files deleted from export, re-export
+* Check if makers in task are on the system
+* Partial builds (make tex, make pdf... and do the minimum to reach this goal)
