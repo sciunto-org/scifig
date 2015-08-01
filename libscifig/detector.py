@@ -3,8 +3,11 @@
 
 import glob
 import os.path
+import logging
 from libscifig.task import GnuplotTask, TikzTask
 
+
+#TODO : recursive glob: https://docs.python.org/3.5/library/glob.html
 
 def detect_datafile(plt, root):
     """
@@ -20,6 +23,8 @@ def detect_datafile(plt, root):
         files = glob.glob(os.path.join(base, '**' + ext))
         files = [os.path.relpath(f, root) for f in files]
         datafiles.extend(files)
+    logging.debug('In %s' % base)
+    logging.debug('Detected datafiles: %s' % datafiles)
     return datafiles
 
 
