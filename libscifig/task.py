@@ -297,7 +297,7 @@ class TikzTask(Task):
         logging.debug('pre_make(): Tikz file %s' % self.tikz)
         # Make build path
         logging.debug('pre_make build path %s' % self.buildpath)
-        os.makedirs(self.buildpath)
+        os.makedirs(self.buildpath, exist_ok=True)
         # First convert tikz to tex
         self._tikz_to_tex()
 
@@ -420,7 +420,7 @@ class GnuplotTask(Task):
         logging.debug('pre_make(): Gnuplot file %s' % self.plt)
         # Make build path
         logging.debug('pre_make build path %s' % self.buildpath)
-        os.makedirs(self.buildpath)
+        os.makedirs(self.buildpath, exist_ok=True)
         # First convert plt to plttikz
         self._plt_to_plttikz()
         # Then, make a tex

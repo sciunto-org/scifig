@@ -11,6 +11,6 @@ setup(
     #license      = info.LICENSE,
     #author_email = info.EMAIL,
     #description  = info.SHORT_DESCRIPTION,
-    script      = ['script.py'],
+    scripts      = ['example/scifig.py'],
     packages     = ['libscifig'],
 )
