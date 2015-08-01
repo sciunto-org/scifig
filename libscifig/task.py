@@ -46,7 +46,7 @@ class Task():
         self.dependencies.append(filepath)
         self.dirname, filename = os.path.split(filepath)
         self.name = os.path.splitext(filename)[0]
-        self.buildpath = os.path.join(build, self.dirname)
+        self.buildpath = os.path.join(build, os.path.relpath(self.dirname))
         self.pdfmaker = '/usr/bin/pdflatex'
         self.svgmaker = '/usr/bin/pdf2svg'
         self.epsmaker = '/usr/bin/pdftops'
@@ -273,7 +273,12 @@ class TikzTask(Task):
         """
         # Copy data files
         for data in self.data:
-            dest = os.path.join(self.buildpath, os.path.split(data)[1])
+            # Data starts from the root.
+            # We need the relative path from the individual directory (ex: src/figure/)
+            dest = os.path.join(self.buildpath, os.path.relpath(data, start=os.path.split(self.tikz)[0]))
+            # Data may be in subdirectories
+            # We reproduce the tree
+            os.makedirs(os.path.split(dest)[0], exist_ok=True)
             logging.debug('copy %s file to %s' % (data, dest))
             shutil.copy(data, dest)
         logging.info('tikz -> tex')
@@ -348,10 +353,15 @@ class GnuplotTask(Task):
         logging.info('plt -> plttikz')
         logging.debug('copy plt file to %s' % self.buildpath)
         shutil.copyfile(self.plt, self.pltcopy)
+
         # Copy data files
         for data in self.data:
-            dest = os.path.join(self.buildpath, os.path.split(data)[1])
-            logging.debug('copy %s file to %s' % (data, dest))
+            # Data starts from the root.
+            # We need the relative path from the individual directory (ex: src/figure/)
+            dest = os.path.join(self.buildpath, os.path.relpath(data, start=os.path.split(self.plt)[0]))
+            # Data may be in subdirectories
+            # We reproduce the tree
+            os.makedirs(os.path.split(dest)[0], exist_ok=True)
             shutil.copy(data, dest)
         # Prepare and run the command
         command = [self.gnuplot, self.name + '.plt']
