@@ -240,21 +240,16 @@ class Task():
 
         :param dst: filepath of the destination directory
         """
-        texdir = os.path.join(dst, 'tex')
-        os.makedirs(texdir, exist_ok=True)
-        self.export_tex(texdir)
-        pdfdir = os.path.join(dst, 'pdf')
-        os.makedirs(pdfdir, exist_ok=True)
-        self.export_pdf(pdfdir)
-        svgdir = os.path.join(dst, 'svg')
-        os.makedirs(svgdir, exist_ok=True)
-        self.export_svg(svgdir)
-        epsdir = os.path.join(dst, 'eps')
-        os.makedirs(epsdir, exist_ok=True)
-        self.export_eps(epsdir)
-        pngdir = os.path.join(dst, 'png')
-        os.makedirs(pngdir, exist_ok=True)
-        self.export_png(pngdir)
+        for ext, func in (('tex', self.export_tex),
+                          ('pdf', self.export_pdf),
+                          ('svg', self.export_svg),
+                          ('eps', self.export_eps),
+                          ('png', self.export_png),):
+
+            path = os.path.join(dst, ext)
+            os.makedirs(path, exist_ok=True)
+            func(path)
+
 
 class TikzTask(Task):
     """
@@ -275,8 +270,10 @@ class TikzTask(Task):
         # Copy data files
         for data in self.data:
             # Data starts from the root.
-            # We need the relative path from the individual directory (ex: src/figure/)
-            dest = os.path.join(self.buildpath, os.path.relpath(data, start=os.path.split(self.tikz)[0]))
+            # We need the relative path from the individual directory
+            # (ex: src/figure/)
+            dest = os.path.join(self.buildpath, os.path.relpath(data,
+                                start=os.path.split(self.tikz)[0]))
             # Data may be in subdirectories
             # We reproduce the tree
             os.makedirs(os.path.split(dest)[0], exist_ok=True)
@@ -327,7 +324,8 @@ class GnuplotTask(Task):
     Gnuplot Task manager.
     """
     def __init__(self, filepath, datafiles=[], tikzsnippet=False,
-                 tikzsnippet1=False, tikzsnippet2=False, build='build', db='db.db'):
+                 tikzsnippet1=False, tikzsnippet2=False,
+                 build='build', db='db.db'):
         Task.__init__(self, filepath, build=build)
         self.plt = filepath
 
@@ -363,7 +361,8 @@ class GnuplotTask(Task):
         for data in self.data:
             # Data starts from the root.
             # We need the relative path from the individual directory (ex: src/figure/)
-            dest = os.path.join(self.buildpath, os.path.relpath(data, start=os.path.split(self.plt)[0]))
+            dest = os.path.join(self.buildpath, os.path.relpath(data,
+                                start=os.path.split(self.plt)[0]))
             # Data may be in subdirectories
             # We reproduce the tree
             os.makedirs(os.path.split(dest)[0], exist_ok=True)
