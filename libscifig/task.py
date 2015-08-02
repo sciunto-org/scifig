@@ -42,7 +42,7 @@ class Task():
     def __init__(self, filepath, build='build', db='db.db'):
         self.db = db
         self.cwd = os.getcwd()
-        self.id = filepath
+        self.id = 'ID:' + os.path.relpath(filepath)
         self.dependencies = []
         self.dependencies.append(filepath)
         self.dirname, filename = os.path.split(filepath)
