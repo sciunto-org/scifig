@@ -1,5 +1,8 @@
+What is it?
+===========
+
 Introduction
-============
+------------
 
 Making figures for presentations, websites or publications usually take
 a lot of time. However, the process is usually the same (compile,
@@ -10,10 +13,10 @@ conceived a workflow and I wrote a software that automate this task.
 The source code is available here: https://github.com/sciunto-org/scifig
 
 Choices
-=======
+-------
 
 Languages and softwares for figures
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We need to choose a technology to make figures. I like to write code,
 I'm efficient that way, so I choose LaTeX because I already use it for
@@ -31,7 +34,7 @@ prepare drawings. They refresh the output while you edit the code. It's
 almost a live mode.
 
 Output formats
---------------
+~~~~~~~~~~~~~~
 
 -  tex (standalone file)
 -  eps
@@ -39,12 +42,11 @@ Output formats
 -  svg
 
 Workflow
---------
+~~~~~~~~
 
 Now, we need to find a strategy to make our figures.
 
 Drawings
-~~~~~~~~
 
 -  tikz file: the code you write with Ktiz for instance, between \\begin
    and \\end{tikzpicture}
@@ -55,7 +57,6 @@ Drawings
 -  svg file: pdf to svg
 
 Plots with gnuplot
-~~~~~~~~~~~~~~~~~~
 
 -  plt file: this is the standard gnuplot script to make a figure, with
    tikz terminal
@@ -69,13 +70,12 @@ Plots with gnuplot
 -  svg file: pdf to svg
 
  Others
-~~~~~~~
 
 Any other chain for another tool can be implemented, such as matplotlib
 in python, which has a tikz terminal too.
 
 Implementation
-==============
+--------------
 
 My first implementation (around 2007) was based on shell scripts and
 makefile. Quickly coded, but not easy to maintain and the code tend to

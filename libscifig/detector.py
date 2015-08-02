@@ -30,7 +30,7 @@ def detect_datafile(plt, root):
     """
     base = os.path.split(plt)[0]
     datafiles = []
-    for ext in ('.res', '.dat', '.txt', '.png', '.jpg'):
+    for ext in ('csv', '.res', '.dat', '.txt', '.png', '.jpg'):
         files = _recursive_glob(base, ext)
         files = [os.path.relpath(f, root) for f in files]
         datafiles.extend(files)
