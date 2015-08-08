@@ -429,7 +429,7 @@ class GnuplotTask(Task):
         # Write the beginning (it is a gnuplot tikz code)
         tex_content += '\\begin{tikzpicture}[gnuplot]\n'
 
-        if self.tikzsnippet1:
+        if self.tikzsnippet1 or self.tikzsnippet:
             logging.debug('Inject body tikzsnippet1')
             tex_content += snippet1[1]
 
