@@ -421,7 +421,7 @@ class GnuplotTask(Task):
             with open(self.snippet2file, 'r') as fh:
                 snippet2 = fh.read()
             snippet2 = re.sub('\\\\end{tikzpicture}', '', snippet2)
-            snippet2 = snippet1.split('\\begin{tikzpicture}')
+            snippet2 = snippet2.split('\\begin{tikzpicture}')
             logging.debug('Inject header tikzsnippet2')
             tex_content += snippet2[0]
 
