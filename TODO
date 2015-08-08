@@ -5,3 +5,5 @@
 * Partial builds (make tex, make pdf... and do the minimum to reach this goal)
 
 * python 3.5 use recursive glob in detector
+
+* fix metadata in setup.py
