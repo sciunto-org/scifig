@@ -34,8 +34,8 @@ def detect_datafile(plt, root):
         files = _recursive_glob(base, ext)
         files = [os.path.relpath(f, root) for f in files]
         datafiles.extend(files)
-    logging.debug('In %s' % base)
-    logging.debug('Detected datafiles: %s' % datafiles)
+    logging.debug('In %s', base)
+    logging.debug('Detected datafiles: %s', datafiles)
     return datafiles
 
 
@@ -50,8 +50,8 @@ def detect_tikzsnippets(plt):
     snippets = [os.path.isfile(base),
                 os.path.isfile(base + '1'),
                 os.path.isfile(base + '2'),]
-    logging.debug('In %s' % base)
-    logging.debug('Detected tikzsnippets: %s' % snippets)
+    logging.debug('In %s', base)
+    logging.debug('Detected tikzsnippets: %s', snippets)
     return snippets
 
 
