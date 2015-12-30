@@ -339,12 +339,15 @@ class GnuplotTask(Task):
         self.tikzsnippet2 = tikzsnippet2
         if tikzsnippet:
             self.snippetfile = os.path.join(self.dirname, self.name + '.tikzsnippet')
+            logging.debug('Append dependency: %s' % self.snippetfile)
             self.dependencies.append(self.snippetfile)
         if tikzsnippet1:
             self.snippet1file = os.path.join(self.dirname, self.name + '.tikzsnippet1')
+            logging.debug('Append dependency: %s' % self.snippet1file)
             self.dependencies.append(self.snippet1file)
         if tikzsnippet2:
             self.snippet2file = os.path.join(self.dirname, self.name + '.tikzsnippet2')
+            logging.debug('Append dependency: %s' % self.snippet2file)
             self.dependencies.append(self.snippet2file)
 
         self.gnuplot = '/usr/bin/gnuplot'
