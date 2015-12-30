@@ -1,0 +1,6 @@
+recursive-include doc *
+recursive-include po4a *
+recursive-include example *
+
+include *.md
+include LICENSE
