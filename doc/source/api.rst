@@ -25,10 +25,10 @@ detector
     :inherited-members:
     :show-inheritance:
 
-colloging
----------
+collogging
+----------
 
-.. automodule:: colloging
+.. automodule:: collogging
     :members:
     :inherited-members:
     :show-inheritance:
