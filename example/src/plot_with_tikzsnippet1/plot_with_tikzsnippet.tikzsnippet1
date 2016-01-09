@@ -1,74 +1,68 @@
 \usetikzlibrary{trees}
 \usetikzlibrary{decorations.pathmorphing}
 
-
-
 \begin{tikzpicture}
 
-\begin{scope}[xshift=200, yshift=80,
-    thick,
-    % Set the overall layout of the tree
-    scale=.4,>=stealth,
-    droplet/.style={ball color=black!20, line width=1pt, opacity=1}
-]
+    \begin{scope}[xshift=200, yshift=80,
+            thick,
+            % Set the overall layout of the tree
+            scale=.4,>=stealth,
+            droplet/.style={ball color=black!20, line width=1pt, opacity=1}
+        ]
 
-\foreach \x in {1,3,5} \draw [fill,cyan!80] (0.4+\x,0.1) arc (-150:-30:0.7) -- (2+0.4+\x,0.3) -- (2+0.4+\x,-3) -- (0+0.4+\x,-3) -- cycle ;
-\draw [cyan!80, fill]  (0.4+7,0.1) arc (-150:-30:0.7) -- (2+0.5+7,0.1) -- (2+0.5+7,-3) -- (0+0.4+7,-3) -- cycle ; %right
-\draw [cyan!80, fill]  (0.5,0)-- (2.5,-0.5)-- (2.5,-3)  -- (0.5,-3)  -- cycle ; % left
+        \foreach \x in {1,3,5} \draw [fill,cyan!80] (0.4+\x,0.1) arc (-150:-30:0.7) -- (2+0.4+\x,0.3) -- (2+0.4+\x,-3) -- (0+0.4+\x,-3) -- cycle ;
+        \draw [cyan!80, fill]  (0.4+7,0.1) arc (-150:-30:0.7) -- (2+0.5+7,0.1) -- (2+0.5+7,-3) -- (0+0.4+7,-3) -- cycle ; %right
+        \draw [cyan!80, fill]  (0.5,0)-- (2.5,-0.5)-- (2.5,-3)  -- (0.5,-3)  -- cycle ; % left
 
-%particles
-\foreach \x in {1,3,5,7,9} \draw [droplet] (\x,0) circle (0.6);
-\foreach \x in {1,3,5,7} \draw [droplet] (\x+1,-0.8) circle (0.6);
-\foreach \x in {1,3,5,7,9} \draw [droplet] (\x,-1.6) circle (0.6);
-\foreach \x in {1,3,5,7} \draw [droplet] (\x+1,-2.4) circle (0.6);
-
-
-\draw [fill, blue!60!green!70] (0.5,-3.0) -- (9.5,-3.0) -- (9.5,-3.9) -- (0.5,-3.9) -- cycle;
-
-% evap
-\foreach \x in {2,4,6,8}  \draw[decorate, decoration={snake}, blue, very thick] (\x, -1+ 1.5) --  (\x, -1+ 2.4);
-\foreach \x in {2,4,6,8}  \draw[->, blue, very thick] (\x,-1+2.4) -- (\x,-1+2.5);
-
-\draw[->, double=red , red] (4.1,0.1) -- (4.7,-0.6);
-\draw[->, double=red, red] (5.9,0.1) -- (5.3,-0.6);
-
-\end{scope}
+        %particles
+        \foreach \x in {1,3,5,7,9} \draw [droplet] (\x,0) circle (0.6);
+        \foreach \x in {1,3,5,7} \draw [droplet] (\x+1,-0.8) circle (0.6);
+        \foreach \x in {1,3,5,7,9} \draw [droplet] (\x,-1.6) circle (0.6);
+        \foreach \x in {1,3,5,7} \draw [droplet] (\x+1,-2.4) circle (0.6);
 
 
+        \draw [fill, blue!60!green!70] (0.5,-3.0) -- (9.5,-3.0) -- (9.5,-3.9) -- (0.5,-3.9) -- cycle;
 
-\begin{scope}[xshift=50, yshift = 80-4,
-    thick,
-    % Set the overall layout of the tree
-    scale=.4,>=stealth,
-    droplet/.style={ball color=black!20, line width=1pt, opacity=1}
-]
+        % evap
+        \foreach \x in {2,4,6,8}  \draw[decorate, decoration={snake}, blue, very thick] (\x, -1+ 1.5) --  (\x, -1+ 2.4);
+        \foreach \x in {2,4,6,8}  \draw[->, blue, very thick] (\x,-1+2.4) -- (\x,-1+2.5);
 
-\foreach \x in {1,3,5} \draw [fill,cyan!80] (0.4+\x,0.3) arc (-150:-30:0.7) -- (2+0.4+\x,0.3) -- (2+0.4+\x,-3) -- (0+0.4+\x,-3) -- cycle ;
-\draw [cyan!80, fill]  (0.4+7,0.3) arc (-150:-30:0.7) -- (2+0.5+7,0.1) -- (2+0.5+7,-3) -- (0+0.4+7,-3) -- cycle ; %right
-\draw [cyan!80, fill]  (0.5,0)-- (2.5,-0.5)-- (2.5,-3)  -- (0.5,-3)  -- cycle ; % left
+        \draw[->, double=red , red] (4.1,0.1) -- (4.7,-0.6);
+        \draw[->, double=red, red] (5.9,0.1) -- (5.3,-0.6);
 
-
-\foreach \x in {1,3,5,7,9} \draw [droplet] (\x,0) circle (0.5);
-\foreach \x in {1,3,5,7} \draw [droplet] (\x+1,-1) circle (0.5);
-\foreach \x in {1,3,5,7,9} \draw [droplet] (\x,-2) circle (0.5);
-
-
-%fibre
-\draw [fill, blue!60!green!70] (0.5,-2.55) -- (9.5,-2.55) -- (9.5,-3.5) -- (0.5,-3.5) -- cycle;
-\draw (5,-3.0) node{Substrate};
-
-% evap
-\foreach \x in {2,4,6,8}  \draw[decorate, decoration={snake}, blue, very thick] (\x, -1+ 1.5) --  (\x, -1+ 2.4);
-\foreach \x in {2,4,6,8}  \draw[->, blue, very thick] (\x,-1+2.4) -- (\x,-1+2.5);
-
-
-\draw[->, double=red , red] (1,-1.0) -- (2,-1.0);
-\draw[->, double=red , red] (9,-1.0) -- (8,-1.0);
-\draw[->, double=red , red] (5,-0.0) -- (5,-1.0);
+    \end{scope}
 
 
 
-\end{scope}
+    \begin{scope}[xshift=50, yshift = 80-4,
+            thick,
+            % Set the overall layout of the tree
+            scale=.4,>=stealth,
+            droplet/.style={ball color=black!20, line width=1pt, opacity=1}
+        ]
+
+        \foreach \x in {1,3,5} \draw [fill,cyan!80] (0.4+\x,0.3) arc (-150:-30:0.7) -- (2+0.4+\x,0.3) -- (2+0.4+\x,-3) -- (0+0.4+\x,-3) -- cycle ;
+        \draw [cyan!80, fill]  (0.4+7,0.3) arc (-150:-30:0.7) -- (2+0.5+7,0.1) -- (2+0.5+7,-3) -- (0+0.4+7,-3) -- cycle ; %right
+        \draw [cyan!80, fill]  (0.5,0)-- (2.5,-0.5)-- (2.5,-3)  -- (0.5,-3)  -- cycle ; % left
+
+
+        \foreach \x in {1,3,5,7,9} \draw [droplet] (\x,0) circle (0.5);
+        \foreach \x in {1,3,5,7} \draw [droplet] (\x+1,-1) circle (0.5);
+        \foreach \x in {1,3,5,7,9} \draw [droplet] (\x,-2) circle (0.5);
+
+
+        % fibre
+        \draw [fill, blue!60!green!70] (0.5,-2.55) -- (9.5,-2.55) -- (9.5,-3.5) -- (0.5,-3.5) -- cycle;
+        \draw (5,-3.0) node{Substrate};
+
+        % evap
+        \foreach \x in {2,4,6,8}  \draw[decorate, decoration={snake}, blue, very thick] (\x, -1+ 1.5) --  (\x, -1+ 2.4);
+        \foreach \x in {2,4,6,8}  \draw[->, blue, very thick] (\x,-1+2.4) -- (\x,-1+2.5);
+
+
+        \draw[->, double=red , red] (1,-1.0) -- (2,-1.0);
+        \draw[->, double=red , red] (9,-1.0) -- (8,-1.0);
+        \draw[->, double=red , red] (5,-0.0) -- (5,-1.0);
+
+    \end{scope}
 \end{tikzpicture}
-
-
