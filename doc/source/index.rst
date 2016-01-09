@@ -5,6 +5,13 @@
 
 Welcome to scifig's documentation!
 ==================================
+:Author: François Boulogne
+:Devel: `github.com project <https://github.com/sciunto-org/scifig>`_
+:Mirror: `git.sciunto.org <https://git.sciunto.org/mirror/scifig>`_
+:Bugs: `github.com <https://github.com/sciunto-org/scifig/issues>`_
+:Generated: |today|
+:License: GPLv3
+:Version: |release|
 
 Contents:
 
