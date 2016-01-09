@@ -266,6 +266,8 @@ class TikzTask(Task):
     def _tikz_to_tex(self):
         """
         Convert tikz to tex.
+
+        :raises: SyntaxError
         """
         # Copy data files
         for data in self.data:
@@ -300,8 +302,12 @@ class TikzTask(Task):
         tikz_content = tikz_content.split("\\begin{tikzpicture}")
         tex_content += tikz_content[0]
         tex_content += "\\begin{document}\n"
-        tex_content += "\\begin{tikzpicture}\n"
-        tex_content += tikz_content[1]
+        tex_content += "\\begin{tikzpicture}"
+        try:
+            tex_content += tikz_content[1]
+        except IndexError:
+            # The file does not contain tikzpicture
+            raise SyntaxError('The file %s does not contain \\begin{tikzpicture}' % self.tikz)
         tex_content += '\\end{document}'
 
         with open(self.tex, 'w') as fh:
@@ -390,6 +396,8 @@ class GnuplotTask(Task):
     def _plttikz_to_tex(self):
         """
         Convert plttikz to tex.
+
+        :raises: SyntaxError
         """
         logging.info('plttikz -> tex')
         tex_content = '\\documentclass{standalone}\n\n'
@@ -434,10 +442,18 @@ class GnuplotTask(Task):
 
         if self.tikzsnippet:
             logging.debug('Inject body tikzsnippet')
-            tex_content += snippet[1]
+            try:
+                tex_content += snippet[1]
+            except IndexError:
+                # The file does not contain tikzpicture
+                raise SyntaxError('The file %s does not contain \\begin{tikzpicture}' % self.tikzsnippet)
         if self.tikzsnippet1:
             logging.debug('Inject body tikzsnippet1')
-            tex_content += snippet1[1]
+            try:
+                tex_content += snippet1[1]
+            except IndexError:
+                # The file does not contain tikzpicture
+                raise SyntaxError('The file %s does not contain \\begin{tikzpicture}' % self.tikzsnippet1)
 
         # Inject plttikz
         with open(self.plttikz, 'r') as fh:
@@ -447,7 +463,11 @@ class GnuplotTask(Task):
 
         if self.tikzsnippet2:
             logging.debug('Inject body tikzsnippet2')
-            tex_content += snippet2[1]
+            try:
+                tex_content += snippet2[1]
+            except IndexError:
+                # The file does not contain tikzpicture
+                raise SyntaxError('The file %s does not contain \\begin{tikzpicture}' % self.tikzsnippet2)
 
         tex_content += '\\end{tikzpicture}\n'
         tex_content += '\\end{document}'

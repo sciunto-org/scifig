@@ -1,0 +1,10 @@
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.misc}
+
+\begin{tikzpicture}[scale=1]
+
+    \draw[very thick] (0,0) circle (1.25cm) ;
+    \node[regular polygon, regular polygon sides=6, shape aspect=0.5, minimum width=4cm, minimum height=1cm, draw,scale=0.75, very thick] (reg) {2.5cm};
+
+\end{tikzpicture}
