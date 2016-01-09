@@ -1,5 +1,7 @@
+0.1.2  2016/01/10
+=================
 
-* Raise exception if not \begin{tikzpicture} in tikz* files
+* Raise exception if no \begin{tikzpicture} in tikz* files
 
 
 0.1.1  2015/08/08
