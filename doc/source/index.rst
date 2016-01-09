@@ -11,7 +11,6 @@ Welcome to scifig's documentation!
 :Bugs: `github.com <https://github.com/sciunto-org/scifig/issues>`_
 :Generated: |today|
 :License: GPLv3
-:Version: |release|
 
 Contents:
 
