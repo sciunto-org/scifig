@@ -19,20 +19,19 @@
 import logging
 import argparse
 import re
-import os.path
-import shutil
 
 logger = logging.getLogger()
 logger.setLevel(logging.ERROR)
-logger.setLevel(logging.DEBUG)
 steam_handler = logging.StreamHandler()
 formatter = logging.Formatter('%(levelname)s: %(message)s')
 steam_handler.setFormatter(formatter)
 logger.addHandler(steam_handler)
 
+
 def get_graphics_paths(texfilepath, uniquify=False):
     """
-    Parse tex files and returns filepaths in \includegraphics{} latex functions.
+    Parse tex files and returns filepaths in \includegraphics{} latex
+    functions.
 
     :param texfilepath: filepath for the texfile to parse
     :param uniquify: uniquify the list
@@ -61,15 +60,14 @@ if __name__ == '__main__':
 
     parser.add_argument('-d', '--debug', help='Activate debug logger', default=0, action='count')
     parser.add_argument('-v', '--verbose', help='Activate verbose logger', default=0, action='count')
-    parser.add_argument('-V', '--version', help='Print version and quit', default=0, action='count')
+    #parser.add_argument('-V', '--version', help='Print version and quit', default=0, action='count')
 
     subparsers = parser.add_subparsers(title='commands')
 
-    # scifigselect path
-    #TODO change names and variables
-    path_parser = subparsers.add_parser('path', help='Extract paths')
-    path_parser.add_argument('tex', help='Name') # multiple files?
-    path_parser.set_defaults(action='path')
+    # scifigselect list
+    list_parser = subparsers.add_parser('list', help='Extract paths and list')
+    list_parser.add_argument('tex', help='Name') # multiple files?
+    list_parser.set_defaults(action='list')
 
     args = parser.parse_args()
 
@@ -86,6 +84,11 @@ if __name__ == '__main__':
     #    print(__version__)
     #    sys.exit(0)
 
-    graphics = get_graphics_paths(args.tex)
-    for graphic in graphics:
-        print(graphic)
+    try:
+        if args.action == 'list':
+            graphics = get_graphics_paths(args.tex)
+            for graphic in graphics:
+                print(graphic)
+    except AttributeError:
+        logger.error('Missing action')
+        parser.print_help()
