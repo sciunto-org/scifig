@@ -16,52 +16,36 @@
 #
 # Author: Francois Boulogne <fboulogne at sciunto dot org>, 2012
 
-import unittest 
+import unittest
 import tempfile
 
-from scifigselect import get_graphics
+from scifigselect import get_graphics_paths
 
-class test_get_graphics(unittest.TestCase):
-    
+class test_get_graphics_paths(unittest.TestCase):
+
     def test_simple_include(self):
         #Prepare the tex file
         temp = tempfile.mkstemp()[1]
         with open(temp, 'w') as tmp:
             tex = """
+            \includegraphics{foo.pdf}
             \includegraphics{fig/toto.pdf}
             \includegraphics[scale=2]{fig/tutu.eps}
-
-            """
-            tmp.write(tex)
-
-        #it corresponds to
-        expected = ['toto.pdf', 'tutu.eps']
-
-        with open(temp, 'r') as tmp:
-            result = get_graphics(tmp, 'fig')
-
-        self.assertEqual(expected, result)
-
-    def test_complex_chars(self):
-        #Prepare the tex file
-        temp = tempfile.mkstemp()[1]
-        with open(temp, 'w') as tmp:
-            tex = """
             \includegraphics{fig/toto-12_AEe.pdf}
 
             """
             tmp.write(tex)
 
-        #it corresponds to
-        expected = ['toto-12_AEe.pdf']
+        expected = ['foo.pdf',
+                    'fig/toto.pdf',
+                    'fig/tutu.eps',
+                    'fig/toto-12_AEe.pdf']
 
         with open(temp, 'r') as tmp:
-            result = get_graphics(tmp, 'fig')
+            result = get_graphics_paths(temp)
 
         self.assertEqual(expected, result)
 
-    
-    
     def test_2_includes_per_line(self):
         #Prepare the tex file
         temp = tempfile.mkstemp()[1]
@@ -72,31 +56,9 @@ class test_get_graphics(unittest.TestCase):
             """
             tmp.write(tex)
 
-        #it corresponds to
-        expected = ['foo.eps', 'bar.eps']
+        expected = ['fig/foo.eps', 'fig/bar.eps']
 
         with open(temp, 'r') as tmp:
-            result = get_graphics(tmp, 'fig')
-
-        self.assertEqual(expected, result)
-
-
-
-    def test_wrong_dir(self):
-        #Prepare the tex file
-        temp = tempfile.mkstemp()[1]
-        with open(temp, 'w') as tmp:
-            tex = """
-            \includegraphics[scale=2]{wrong_dir/bar.eps}
-            \includegraphics[scale=2]{dir/bad/bar.eps}
-
-            """
-            tmp.write(tex)
-
-        #it corresponds to
-        expected = []
-
-        with open(temp, 'r') as tmp:
-            result = get_graphics(tmp, 'dir')
+            result = get_graphics_paths(temp)
 
         self.assertEqual(expected, result)

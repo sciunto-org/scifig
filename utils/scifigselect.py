@@ -16,47 +16,74 @@
 #
 # Author: Francois Boulogne <devel at sciunto dot org>, 2012-2016
 
+import logging
 import argparse
 import re
 import os.path
 import shutil
 
+logger = logging.getLogger()
+logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
+steam_handler = logging.StreamHandler()
+formatter = logging.Formatter('%(levelname)s: %(message)s')
+steam_handler.setFormatter(formatter)
+logger.addHandler(steam_handler)
 
-def get_graphics(texfilehandler, directory):
+def get_graphics_paths(texfilepath):
     """
-    Parse tex files and returns graphic names
+    Parse tex files and returns filepaths in \includegraphics{} latex functions.
 
-    texfilehandler: filehandler .tex
+    :param texfilepath: filepath for the texfile to parse
     """
     graphic_names = []
-    for line in texfilehandler.readlines():
-        graphics = re.findall('includegraphics(\[.*?\]|){' +
-                              directory +
-                              '/([a-zA-Z0-9\.\-_]*)}', line)
-        for graphic in graphics:
-            graphic_names.append(graphic[1])
+    logger.debug('Read %s', texfilepath)
+    with open(texfilepath, 'r') as tex:
+        for line in tex.readlines():
+            graphics = re.findall('\includegraphics(\[.*?\]|){([a-zA-Z0-9\.\-_/]*)}', line)
+            if graphics != []:
+                logger.debug('regexp result: %s', graphics)
+
+            for graphic in graphics:
+                graphic_names.append(graphic[1])
     return graphic_names
 
 
 if __name__ == '__main__':
+    # FIXME
     description = 'Make a proper fig directory'
     epilog = 'All figures like \includegraphics{fig/figure.pdf} will be copied in the output `fig`.'
+
     parser = argparse.ArgumentParser(description=description,
                                      epilog=epilog)
-    parser.add_argument('figures', help='Directory containing figures', metavar='DIR')
-    parser.add_argument('texfile', help='TeX file', metavar='FILE')
-    parser.add_argument('output', help='Output directory', metavar='OUTPUT')
+
+    parser.add_argument('-d', '--debug', help='Activate debug logger', default=0, action='count')
+    parser.add_argument('-v', '--verbose', help='Activate verbose logger', default=0, action='count')
+    parser.add_argument('-V', '--version', help='Print version and quit', default=0, action='count')
+
+    subparsers = parser.add_subparsers(title='commands')
+
+    # scifigselect path
+    #TODO change names and variables
+    path_parser = subparsers.add_parser('path', help='Extract paths')
+    path_parser.add_argument('tex', help='Name') # multiple files?
+    path_parser.set_defaults(action='path')
 
     args = parser.parse_args()
 
-    if not os.path.isdir(args.output):
-        os.makedirs(args.output)
+    # Options
+    if args.debug:
+        logger.setLevel(logging.DEBUG)
+    elif args.verbose:
+        logger.setLevel(logging.INFO)
 
-    with open(args.texfile, 'r') as tex:
-        graphics = get_graphics(tex, args.output)
-        for graphic in graphics:
-            source = os.path.join(args.figures, graphic)
-            if os.path.isfile(source):
-                shutil.copy2(source, args.output)
-            else:
-                print('%s does not exist.' % source)
+    logger.debug('Arguments: %s' %args)
+
+    #TODO
+    #if args.version:
+    #    print(__version__)
+    #    sys.exit(0)
+
+    graphics = get_graphics_paths(args.tex)
+    for graphic in graphics:
+        print(graphic)
