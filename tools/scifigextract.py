@@ -50,9 +50,8 @@ def get_graphics_paths(texfilepath):
 
 
 if __name__ == '__main__':
-    # FIXME
-    description = 'Make a proper fig directory'
-    epilog = 'All figures like \includegraphics{fig/figure.pdf} will be copied in the output `fig`.'
+    description = 'Extract path from includegraphics in tex files'
+    epilog = ''
 
     parser = argparse.ArgumentParser(description=description,
                                      epilog=epilog)
