@@ -2,7 +2,7 @@
 =================
 
 * Raise exception if no \begin{tikzpicture} in tikz* files
-
+* Speed up logging
 
 0.1.1  2015/08/08
 =================

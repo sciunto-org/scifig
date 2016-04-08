@@ -73,9 +73,9 @@ class Task():
         # Prepare and run the command
         command = [self.pdfmaker, self.name + '.tex']
         # in plt, all path are relative, need to move
-        logging.debug('chdir: %s' % self.buildpath)
+        logging.debug('chdir: %s', self.buildpath)
         os.chdir(self.buildpath)
-        logging.debug('Command: %s' % command)
+        logging.debug('Command: %s', command)
         process = subprocess.Popen(command, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         # go back to the cur dir
@@ -98,9 +98,9 @@ class Task():
         # Prepare and run the command
         command = [self.svgmaker, self.name + '.pdf', self.svg]
         # in plt, all path are relative, need to move
-        logging.debug('chdir: %s' % self.buildpath)
+        logging.debug('chdir: %s', self.buildpath)
         os.chdir(self.buildpath)
-        logging.debug('Command: %s' % command)
+        logging.debug('Command: %s', command)
         process = subprocess.Popen(command, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         # go back to the cur dir
@@ -121,9 +121,9 @@ class Task():
         # Prepare and run the command
         command = [self.epsmaker, '-eps', self.name + '.pdf', self.eps]
         # in plt, all path are relative, need to move
-        logging.debug('chdir: %s' % self.buildpath)
+        logging.debug('chdir: %s', self.buildpath)
         os.chdir(self.buildpath)
-        logging.debug('Command: %s' % command)
+        logging.debug('Command: %s', command)
         process = subprocess.Popen(command, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         # go back to the cur dir
@@ -146,9 +146,9 @@ class Task():
         command = [self.pngmaker, '-sDEVICE=png16m', '-o',
                    self.png, '-r' + str(dpi), self.name + '.pdf']
         # in plt, all path are relative, need to move
-        logging.debug('chdir: %s' % self.buildpath)
+        logging.debug('chdir: %s', self.buildpath)
         os.chdir(self.buildpath)
-        logging.debug('Command: %s' % command)
+        logging.debug('Command: %s', command)
         process = subprocess.Popen(command, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         # go back to the cur dir
@@ -187,7 +187,7 @@ class Task():
         """
         dst = os.path.expanduser(dst)
         tex_src = self.tex
-        logging.debug('Export %s to %s' % (tex_src, dst))
+        logging.debug('Export %s to %s', tex_src, dst)
         shutil.copy(tex_src, dst)
 
     def export_pdf(self, dst='/tmp'):
@@ -198,7 +198,7 @@ class Task():
         """
         dst = os.path.expanduser(dst)
         pdf_src = os.path.join(self.buildpath, self.pdf)
-        logging.debug('Export %s to %s' % (pdf_src, dst))
+        logging.debug('Export %s to %s', pdf_src, dst)
         shutil.copy(pdf_src, dst)
 
     def export_svg(self, dst='/tmp'):
@@ -209,7 +209,7 @@ class Task():
         """
         dst = os.path.expanduser(dst)
         svg_src = os.path.join(self.buildpath, self.svg)
-        logging.debug('Export %s to %s' % (svg_src, dst))
+        logging.debug('Export %s to %s', svg_src, dst)
         shutil.copy(svg_src, dst)
 
     def export_eps(self, dst='/tmp'):
@@ -220,7 +220,7 @@ class Task():
         """
         dst = os.path.expanduser(dst)
         eps_src = os.path.join(self.buildpath, self.eps)
-        logging.debug('Export %s to %s' % (eps_src, dst))
+        logging.debug('Export %s to %s', eps_src, dst)
         shutil.copy(eps_src, dst)
 
     def export_png(self, dst='/tmp'):
@@ -231,7 +231,7 @@ class Task():
         """
         dst = os.path.expanduser(dst)
         png_src = os.path.join(self.buildpath, self.png)
-        logging.debug('Export %s to %s' % (png_src, dst))
+        logging.debug('Export %s to %s', png_src, dst)
         shutil.copy(png_src, dst)
 
     def export(self, dst='/tmp'):
@@ -279,7 +279,7 @@ class TikzTask(Task):
             # Data may be in subdirectories
             # We reproduce the tree
             os.makedirs(os.path.split(dest)[0], exist_ok=True)
-            logging.debug('copy %s file to %s' % (data, dest))
+            logging.debug('copy %s file to %s', data, dest)
             shutil.copy(data, dest)
         logging.info('tikz -> tex')
         tex_content = '\\documentclass{standalone}\n\n'
@@ -317,9 +317,9 @@ class TikzTask(Task):
         """
         make a tex file.
         """
-        logging.debug('pre_make(): Tikz file %s' % self.tikz)
+        logging.debug('pre_make(): Tikz file %s', self.tikz)
         # Make build path
-        logging.debug('pre_make build path %s' % self.buildpath)
+        logging.debug('pre_make build path %s', self.buildpath)
         os.makedirs(self.buildpath, exist_ok=True)
         # First convert tikz to tex
         self._tikz_to_tex()
@@ -363,7 +363,7 @@ class GnuplotTask(Task):
         Convert plt to plttikz.
         """
         logging.info('plt -> plttikz')
-        logging.debug('copy plt file to %s' % self.buildpath)
+        logging.debug('copy plt file to %s', self.buildpath)
         shutil.copyfile(self.plt, self.pltcopy)
 
         # Copy data files
@@ -378,7 +378,7 @@ class GnuplotTask(Task):
             shutil.copy(data, dest)
         # Prepare and run the command
         command = [self.gnuplot, self.name + '.plt']
-        logging.debug('Command: %s' % command)
+        logging.debug('Command: %s', command)
         # in plt, all path are relative, need to move
         os.chdir(self.buildpath)
         process = subprocess.Popen(command, stdout=subprocess.PIPE,
@@ -479,9 +479,9 @@ class GnuplotTask(Task):
         """
         make a tex file.
         """
-        logging.debug('pre_make(): Gnuplot file %s' % self.plt)
+        logging.debug('pre_make(): Gnuplot file %s', self.plt)
         # Make build path
-        logging.debug('pre_make build path %s' % self.buildpath)
+        logging.debug('pre_make build path %s', self.buildpath)
         os.makedirs(self.buildpath, exist_ok=True)
         # First convert plt to plttikz
         self._plt_to_plttikz()
