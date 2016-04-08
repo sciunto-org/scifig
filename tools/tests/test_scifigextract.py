@@ -32,6 +32,7 @@ class test_get_graphics_paths(unittest.TestCase):
             \includegraphics{fig/toto.pdf}
             \includegraphics[scale=2]{fig/tutu.eps}
             \includegraphics{fig/toto-12_AEe.pdf}
+            \includegraphics{fig/noextension}
 
             """
             tmp.write(tex)
@@ -39,7 +40,8 @@ class test_get_graphics_paths(unittest.TestCase):
         expected = ['foo.pdf',
                     'fig/toto.pdf',
                     'fig/tutu.eps',
-                    'fig/toto-12_AEe.pdf']
+                    'fig/toto-12_AEe.pdf',
+                    'fig/noextension']
 
         with open(temp, 'r') as tmp:
             result = get_graphics_paths(temp)
@@ -99,4 +101,4 @@ class test_get_graphics_paths(unittest.TestCase):
         with open(temp, 'r') as tmp:
             result = get_graphics_paths(temp, uniquify=True)
 
-        self.assertEqual(expected, result)
+        self.assertEqual(sorted(expected), sorted(result))
