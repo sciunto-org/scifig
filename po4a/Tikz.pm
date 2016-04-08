@@ -100,12 +100,12 @@ L<po4a(7)|po4a.7>, L<Locale::Po4a::TransTractor(3pm)>.
 
  Razvan Rusu <rrusu@bitdefender.com>
  Costin Stroie <cstroie@bitdefender.com>
- Francois Boulogne <fboulogne at april dot org>
+ Francois Boulogne <devel at sciunto dot org>
 
 =head1 COPYRIGHT AND LICENSE
 
 Copyright 2006 by BitDefender
-Copytirght 2012 by Francois Boulogne <fboulogne at april dot org>
+Copytirght 2012 by Francois Boulogne <devel at sciunto dot org>
 
 This program is free software; you may redistribute it and/or modify it
 under the terms of GPL (see the COPYING file).

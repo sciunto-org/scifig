@@ -13,7 +13,7 @@ setup(
     url          = "https://scifig.readthedocs.org",
     author       = "Francois Boulogne",
     license      = "GPLv3",
-    author_email = "fboulogne@sciunto.org",
+    author_email = "devel@sciunto.org",
     description  = "A build tool for (non?)-scientific figures",
     scripts      = ['example/scifig.py'],
     packages     = ['libscifig'],
