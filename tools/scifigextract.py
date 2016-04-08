@@ -30,11 +30,12 @@ formatter = logging.Formatter('%(levelname)s: %(message)s')
 steam_handler.setFormatter(formatter)
 logger.addHandler(steam_handler)
 
-def get_graphics_paths(texfilepath):
+def get_graphics_paths(texfilepath, uniquify=False):
     """
     Parse tex files and returns filepaths in \includegraphics{} latex functions.
 
     :param texfilepath: filepath for the texfile to parse
+    :param uniquify: uniquify the list
     """
     graphic_names = []
     logger.debug('Read %s', texfilepath)
@@ -46,6 +47,8 @@ def get_graphics_paths(texfilepath):
 
             for graphic in graphics:
                 graphic_names.append(graphic[1])
+    if uniquify:
+        return list(set(graphic_names))
     return graphic_names
 
 

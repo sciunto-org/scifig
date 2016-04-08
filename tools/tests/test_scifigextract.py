@@ -62,3 +62,41 @@ class test_get_graphics_paths(unittest.TestCase):
             result = get_graphics_paths(temp)
 
         self.assertEqual(expected, result)
+
+    def test_duplicated_figures(self):
+        #Prepare the tex file
+        temp = tempfile.mkstemp()[1]
+        with open(temp, 'w') as tmp:
+            tex = """
+            \includegraphics[scale=2]{fig/foo.eps}
+            \includegraphics[scale=2]{fig/bar.eps}
+            \includegraphics[scale=1]{fig/foo.eps}
+
+            """
+            tmp.write(tex)
+
+        expected = ['fig/foo.eps', 'fig/bar.eps', 'fig/foo.eps']
+
+        with open(temp, 'r') as tmp:
+            result = get_graphics_paths(temp)
+
+        self.assertEqual(expected, result)
+
+    def test_duplicated_figures_uniq(self):
+        #Prepare the tex file
+        temp = tempfile.mkstemp()[1]
+        with open(temp, 'w') as tmp:
+            tex = """
+            \includegraphics[scale=2]{fig/foo.eps}
+            \includegraphics[scale=2]{fig/bar.eps}
+            \includegraphics[scale=1]{fig/foo.eps}
+
+            """
+            tmp.write(tex)
+
+        expected = ['fig/foo.eps', 'fig/bar.eps']
+
+        with open(temp, 'r') as tmp:
+            result = get_graphics_paths(temp, uniquify=True)
+
+        self.assertEqual(expected, result)
