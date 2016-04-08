@@ -15,6 +15,6 @@ setup(
     license      = "GPLv3",
     author_email = "devel@sciunto.org",
     description  = "A build tool for (non?)-scientific figures",
-    scripts      = ['example/scifig.py'],
+    scripts      = ['example/scifig.py', 'tools/scifigextract.py'],
     packages     = ['libscifig'],
 )

@@ -20,6 +20,7 @@ Contents:
    what.rst
    install.rst
    api.rst
+   tools.rst
 
 
 Indices and tables
