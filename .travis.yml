@@ -1,0 +1,29 @@
+language: python
+matrix:
+  include:
+    - python: "2.7"
+      env: TEST_SUITE=suite_2_7
+    - python: "3.3"
+      env: TEST_SUITE=suite_3_3
+    - python: "3.4"
+      env: TEST_SUITE=suite_3_4
+    - python: "3.5"
+      env: TEST_SUITE=suite_3_5
+    - python: "pypy"
+      env: TEST_SUITE=suite_pypy
+install:
+    #  - if [[ $TEST_SUITE == suite_3_5 ]]; then
+    #        pip install sphinx;
+    #    fi;
+  - pip install coverage pyparsing
+  - python setup.py install
+script:
+  - cd utils ; nosetests --with-coverage  --cover-erase --cover-package=bibtexparser
+    #  - if [[ $TEST_SUITE == suite_3_5 ]]; then
+    #        cd docs;
+    #        make html;
+    #    fi;
+
+after_success:
+  - pip install coveralls
+  - coveralls
