@@ -15,15 +15,15 @@ install:
     #  - if [[ $TEST_SUITE == suite_3_5 ]]; then
     #        pip install sphinx;
     #    fi;
-  - pip install coverage pyparsing
+    #- pip install coverage
   - python setup.py install
 script:
-  - cd utils ; nosetests --with-coverage  --cover-erase --cover-package=bibtexparser
+  - cd utils ; nosetests
     #  - if [[ $TEST_SUITE == suite_3_5 ]]; then
     #        cd docs;
     #        make html;
     #    fi;
 
-after_success:
-  - pip install coveralls
-  - coveralls
+#after_success:
+#  - pip install coveralls
+#  - coveralls
