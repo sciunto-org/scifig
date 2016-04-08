@@ -12,17 +12,17 @@ matrix:
     - python: "pypy"
       env: TEST_SUITE=suite_pypy
 install:
-      - if [[ $TEST_SUITE == suite_3_5 ]]; then
-            pip install sphinx;
-        fi;
-    #- pip install coverage
-  - python setup.py install
+    - if [[ $TEST_SUITE == suite_3_5 ]]; then
+          pip install sphinx;
+      fi;
+      #- pip install coverage
+    - python setup.py install
 script:
-  - cd utils ; nosetests
-      - if [[ $TEST_SUITE == suite_3_5 ]]; then
-            cd doc;
-            make html;
-        fi;
+    - cd utils ; nosetests
+    - if [[ $TEST_SUITE == suite_3_5 ]]; then
+          cd doc;
+          make html;
+      fi;
 
 #after_success:
 #  - pip install coveralls
