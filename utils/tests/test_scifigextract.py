@@ -19,7 +19,7 @@
 import unittest
 import tempfile
 
-from scifigselect import get_graphics_paths
+from scifigextract import get_graphics_paths
 
 class test_get_graphics_paths(unittest.TestCase):
 
