@@ -21,4 +21,4 @@ This code is a rewritten version of a previous code named SciFigWorkflow. This t
 Documentation
 =============
 
-To learn more, read https://scifig.readthedocs.org
+To learn more, read https://scifig.readthedocs.io
