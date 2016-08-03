@@ -64,7 +64,6 @@ def detect_task(directory, root_path):
     """
     plt_files = glob.glob(os.path.join(directory, '*.plt'))
     tikz_files = glob.glob(os.path.join(directory, '*.tikz'))
-    db_path = os.path.join(root_path, 'db.db')
     tasks = []
     for plt_file in plt_files:
         data = detect_datafile(plt_file, root_path)
@@ -74,12 +73,10 @@ def detect_task(directory, root_path):
                                  tikzsnippet=snippet,
                                  tikzsnippet1=snippet1,
                                  tikzsnippet2=snippet2,
-                                 db=db_path,
                                  ))
     for tikz_file in tikz_files:
         data = detect_datafile(tikz_file, root_path)
         tasks.append(TikzTask(tikz_file,
                               datafiles=data,
-                              db=db_path,
                               ))
     return tasks

@@ -1,82 +1,54 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Author: Francois Boulogne
+# License:
 
+import json
 import logging
-import os.path
-import hashlib
-try:
-    import cPickle as pickle
-except:
-    import pickle
 
-def _calculate_checksum(filepath):
-    hasher = hashlib.md5()
-    with open(filepath, 'rb') as afile:
-        buf = afile.read()
-        hasher.update(buf)
-    return hasher.hexdigest()
-
-
-def check_modification(name, dependencies, db_path):
+class DataBase():
     """
-    Check if at least one dependency changed.
+    Custom class to manipulate a json database.
 
-    :param name: name of the figure
-    :param dependencies: list of dependencies
-    :param db_path: path of the database
-    :returns: boolean
+    :param db_path: filepath of the database.
     """
-    logging.debug('Check modification for %s', name)
-    if not os.path.isfile(db_path):
-        logging.debug('No db, modif is True')
-        return True
-    cur_signature = {}
-    for dep in dependencies:
-        cur_signature[dep] = _calculate_checksum(dep)
-    with open(db_path, 'rb') as fh:
-        db = pickle.load(fh)
-        db = db.get(name)
-        if db is None:
-            logging.debug('name unknown in db, modif is True')
-            return True
-        for dep, md5 in cur_signature.items():
-            value = db.get(dep)
-            if value is None or value != md5:
-                logging.debug('value of %s is None or does not match, modif is True', dep)
-                return True
-    return False
+    def __init__(self, db_path):
+        self.path = db_path
 
+    def __enter__(self):
+        try:
+            with open(self.path, 'r') as f:
+                self.data = json.load(f)
+        except FileNotFoundError:
+            self.data = {}
+        return self
 
-def store_checksum(name, dependencies, db_path):
-    """
-    Store the checksum in the db.
+    def __exit__(self, type, value, traceback):
+        with open(self.path, 'w') as f:
+            json.dump(self.data, f)
 
-    :param name: name of the figure
-    :param dependencies: list of dependencies
-    :param db_path: path of the database
-    """
-    logging.debug('Store checksums in db')
-    # Calculate md5 sums
-    cur_signature = {}
-    for dep in dependencies:
-        cur_signature[dep] = _calculate_checksum(dep)
-    try:
-        with open(db_path, 'rb') as fh:
-            db = pickle.load(fh)
-    except FileNotFoundError:
-        db = {}
-    # Merge dict
-    db[name] = cur_signature
-    with open(db_path, 'wb') as fh:
-        pickle.dump(db, fh)
+    def set(self, name, obj, content):
+        """
+        Set a content to a tree (name--object).
 
+        :param name: ID of the element, like filepath
+        :param obj: Content type (like deps, targets...)
+        :param content: Content to store, a dict.
+        """
+        if not name in self.data.keys():
+            self.data[name] = {obj: content}
+        else:
+            self.data[name][obj] = content
 
-def erase_db(db_path):
-    """
-    Erase a database.
+    def get(self, name, obj):
+        """
+        Get a content from a tree (name--object).
 
-    :param db_path: path of the database
-    """
-    logging.debug('Erase db')
-    with open(db_path, 'wb') as fh:
-        pickle.dump({}, fh)
+        :param name: ID of the element, like filepath
+        :param obj: Content type (like deps, targets...)
+        """
+        try:
+            d = self.data[name][obj]
+        except KeyError:
+            d = {}
+        return d
