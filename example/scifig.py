@@ -8,7 +8,7 @@ import os.path
 import shutil
 import argparse
 
-from libscifig import detector
+from libscifig import detector, database
 
 
 def list_figdirs(src='src'):
@@ -30,35 +30,39 @@ def clean_up(path):
     """
     Clean up all compiled files.
     """
+    db = os.path.join(path, 'db.json')
+    logging.debug('Clean up %s' % db)
+    try:
+        os.remove(db)
+    except FileNotFoundError:
+        pass
     build = os.path.join(path, 'build')
-    db = os.path.join(path, 'db.db')
     logging.debug('Clean up %s' % build)
     if os.path.exists(build):
         shutil.rmtree(build)
-    from libscifig.database import erase_db
-    erase_db(db)
 
 
-def main(workingdir, dest='/tmp'):
+def main(workingdir, dest='/tmp', pdf_only=False):
     make_build_dir(os.path.join(workingdir, 'build'))
     tasks = []
     for directory in list_figdirs(os.path.join(workingdir, 'src')):
         tasks.extend(detector.detect_task(directory, workingdir))
 
-    for task in tasks:
-        if task.check():
-            logging.info('Build %s' % task.get_name())
-            task.make()
-            logging.info('Export %s' % task.get_name())
-            task.export(dst=dest)
-        else:
-            logging.info('Nothing to do for %s' % task.get_name())
+    db_path = os.path.join(workingdir, 'db.json')
+    with database.DataBase(db_path) as db:
+        for task in tasks:
+            if pdf_only:
+                task.make_pdf(db)
+            else:
+                task.make(db)
+            task.export(db, dst=dest)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='', epilog='')
-    #parser.add_argument('conf', help='Configuration file', metavar='CONF')
     parser.add_argument('-c', '--clean', action='store_true',
                         default=False, help='Clean')
+    parser.add_argument('--pdf', action='store_true',
+                        default=False, help='PDF only')
     parser.add_argument('-d', '--dest', metavar='DEST',
                         default='/tmp', help='destination')
     parser.add_argument('-w', '--workingdir', metavar='WORKINGDIR',
@@ -90,9 +94,10 @@ if __name__ == '__main__':
     steam_handler.setFormatter(color_formatter)
     logger.addHandler(steam_handler)
 
-    #logger.debug(args)
     if args.clean:
         logger.info('Cleaning...')
         clean_up(args.workingdir)
+    elif args.pdf:
+        main(args.workingdir, args.dest, pdf_only=True)
     else:
-        main(args.workingdir, args.dest)
+        main(args.workingdir, args.dest, pdf_only=False)

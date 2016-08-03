@@ -1,7 +1,7 @@
 # Project
 .backups
 MANIFEST
-example/db.db
+example/db.json
 
 
 # Byte-compiled / optimized / DLL files

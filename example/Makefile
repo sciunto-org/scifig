@@ -5,6 +5,9 @@ POACONF=po4a.cfg
 all:
 	python scifig.py -d $(DIR)
 
+pdf:
+	python scifig.py --pdf -d $(DIR)
+
 i18n:
 	$(POA) -k0 $(POACONF)
 

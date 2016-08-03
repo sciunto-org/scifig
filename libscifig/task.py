@@ -28,7 +28,7 @@ import subprocess
 import logging
 import re
 
-from libscifig import database as dblib
+from libscifig.checksum import calculate_checksum, is_different
 
 
 class Task():
@@ -37,10 +37,8 @@ class Task():
 
     :param filepath: filepath of the main file
     :param build: relative filepath of the build dir
-    :param db: relative filepath of the db file
     """
-    def __init__(self, filepath, build='build', db='db.db'):
-        self.db = db
+    def __init__(self, filepath, build='build'):
         self.cwd = os.getcwd()
         self.id = 'ID:' + os.path.relpath(filepath)
         self.dependencies = []
@@ -53,17 +51,16 @@ class Task():
         self.epsmaker = '/usr/bin/pdftops'
         self.pngmaker = '/usr/bin/gs'
 
+        self.eps = self.name + '.eps'
+        self.pdf = self.name + '.pdf'
+        self.png = self.name + '.png'
+        self.svg = self.name + '.svg'
+
     def get_name(self):
         """
         Return the name of the task.
         """
         return self.id
-
-    def check(self):
-        """
-        Check if the task needs to be done.
-        """
-        return dblib.check_modification(self.id, self.dependencies, self.db)
 
     def _tex_to_pdf(self):
         """
@@ -87,14 +84,12 @@ class Task():
         if errors:
             logging.error(errors)  # TODO color
 
-        self.pdf = self.name + '.pdf'
-
     def _pdf_to_svg(self):
         """
         Convert pdf to svg.
         """
         logging.info('pdf -> svg')
-        self.svg = self.name + '.svg'
+
         # Prepare and run the command
         command = [self.svgmaker, self.name + '.pdf', self.svg]
         # in plt, all path are relative, need to move
@@ -117,7 +112,7 @@ class Task():
         Convert pdf to eps.
         """
         logging.info('pdf -> eps')
-        self.eps = self.name + '.eps'
+
         # Prepare and run the command
         command = [self.epsmaker, '-eps', self.name + '.pdf', self.eps]
         # in plt, all path are relative, need to move
@@ -141,7 +136,7 @@ class Task():
         Convert pdf to png.
         """
         logging.info('pdf -> png')
-        self.png = self.name + '.png'
+
         # Prepare and run the command
         command = [self.pngmaker, '-sDEVICE=png16m', '-o',
                    self.png, '-r' + str(dpi), self.name + '.pdf']
@@ -160,24 +155,86 @@ class Task():
         if errors:
             logging.error(errors)  # TODO color
 
+    def check_dependencies(self, db):
+        """
+        Check if dependencies have been modified.
+
+        :param db: `DataBase` instance
+        """
+        self.current_hashes = {}
+        for dep in self.dependencies:
+            self.current_hashes[dep] = calculate_checksum(dep)
+
+        db_hashes = db.get(self.id, 'deps')
+
+        return is_different(self.current_hashes, db_hashes)
+
+    def check_targets(self, db, pdf_only=False):
+        """
+        Check if targets have been modified.
+
+        :param db: `DataBase` instance
+        :param pdf_only: Check only the status for pdf
+        """
+        status = db.get(self.id, 'targets')
+        if pdf_only:
+            return not status['pdf']
+        else:
+            if False in status.values():
+                return True
+            else:
+                return False
+
     def _pre_make(self):
         """
-        make a tex file.
+        Make a tex file.
         """
         logging.debug('Default pre_make() in class Task, nothing to do!')
         pass
 
-    def make(self):
+    def make_pdf(self, db):
+        """
+        Compile the figure in pdf.
+        """
+        if self.check_dependencies(db) or self.check_targets(db, pdf_only=True):
+            logging.info('Build in pdf %s' % self.name)
+            self._pre_make()
+            # Build a pdf
+            self._tex_to_pdf()
+            db.set(self.id, 'deps', self.current_hashes)
+            target_status = {'tex': True,
+                             'pdf': True,
+                             'svg': False,
+                             'eps': False,
+                             'png': False}
+            db.set(self.id, 'targets', target_status)
+            db.set(self.id, 'export', target_status)
+        else:
+            logging.info('Nothing to do for %s' % self.name)
+
+    def make(self, db):
         """
         Compile the figure in all formats.
         """
-        self._pre_make()
-        # Build a pdf
-        self._tex_to_pdf()
-        self._pdf_to_svg()
-        self._pdf_to_eps()
-        self._pdf_to_png()
-        dblib.store_checksum(self.id, self.dependencies, self.db)
+        if self.check_dependencies(db) or self.check_targets(db, pdf_only=False):
+            logging.info('Build in all formats %s' % self.name)
+            self._pre_make()
+            # Build a pdf
+            self._tex_to_pdf()
+            # Build other formats
+            self._pdf_to_svg()
+            self._pdf_to_eps()
+            self._pdf_to_png()
+            db.set(self.id, 'deps', self.current_hashes)
+            target_status = {'tex': True,
+                             'pdf': True,
+                             'svg': True,
+                             'eps': True,
+                             'png': True}
+            db.set(self.id, 'targets', target_status)
+            db.set(self.id, 'export', target_status)
+        else:
+            logging.info('Nothing to do for %s' % self.name)
 
     def export_tex(self, dst='/tmp'):
         """
@@ -234,21 +291,31 @@ class Task():
         logging.debug('Export %s to %s', png_src, dst)
         shutil.copy(png_src, dst)
 
-    def export(self, dst='/tmp'):
+    def export(self, db, dst='/tmp'):
         """
         Export built files.
 
+        :param db: `DataBase` instance
         :param dst: filepath of the destination directory
         """
+        logging.info('Export %s' % self.name)
+        status = db.get(self.id, 'export')
         for ext, func in (('tex', self.export_tex),
                           ('pdf', self.export_pdf),
                           ('svg', self.export_svg),
                           ('eps', self.export_eps),
                           ('png', self.export_png),):
 
-            path = os.path.join(dst, ext)
-            os.makedirs(path, exist_ok=True)
-            func(path)
+            if status[ext]:
+                path = os.path.join(dst, ext)
+                os.makedirs(path, exist_ok=True)
+                func(path)
+        export_status = {'tex': False,
+                         'pdf': False,
+                         'svg': False,
+                         'eps': False,
+                         'png': False}
+        db.set(self.id, 'export', export_status)
 
 
 class TikzTask(Task):
@@ -256,7 +323,7 @@ class TikzTask(Task):
     Tikz Task manager.
     """
     def __init__(self, filepath, datafiles=[],
-                 build='build', db='db.db'):
+                 build='build'):
         Task.__init__(self, filepath, build=build)
         self.data = datafiles
         self.dependencies.extend(datafiles)
@@ -331,7 +398,7 @@ class GnuplotTask(Task):
     """
     def __init__(self, filepath, datafiles=[], tikzsnippet=False,
                  tikzsnippet1=False, tikzsnippet2=False,
-                 build='build', db='db.db'):
+                 build='build'):
         Task.__init__(self, filepath, build=build)
         self.plt = filepath
 

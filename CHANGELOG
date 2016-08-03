@@ -2,6 +2,10 @@
 =================
 
 * add a tool to extract filepath from includegraphics in tex files
+* add a tool to automake upon changes in src
+* switch to a json database
+* add a function make_pdf to build pdf only
+* exports happen only if necessary
 
 0.1.2  2016/01/10
 =================
